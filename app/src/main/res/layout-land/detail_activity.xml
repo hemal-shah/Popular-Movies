@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_detail_activity"
+    android:background="#cccccc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/main_poster_detail_activity"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/poster"
+        android:scaleType="fitXY"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/small_poster_detail_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left_poster"
+        android:layout_marginStart="@dimen/margin_left_poster"
+        android:layout_marginTop="@dimen/margin_top_poster"
+        android:contentDescription="@string/small_poster"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/tv_title_detail_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/title_size"
+        android:text="@string/random_text"
+        android:layout_below="@+id/small_poster_detail_activity"
+        android:layout_alignLeft="@+id/small_poster_detail_activity"
+        android:layout_alignStart="@+id/small_poster_detail_activity" />
+
+    <include
+        android:id="@+id/description_container"
+        layout="@layout/description_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_left_include"
+        android:layout_marginStart="@dimen/margin_left_include"
+        android:layout_alignTop="@+id/small_poster_detail_activity"
+        android:layout_toRightOf="@+id/small_poster_detail_activity"
+        android:layout_toEndOf="@+id/small_poster_detail_activity" />
+
+</RelativeLayout>

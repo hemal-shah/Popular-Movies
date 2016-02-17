@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="api_key"></string>
+    <string name="popularity">Popularity</string>
+    <string name="highest_rating">Highest Rating</string>
+    <string name="poster">poster</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="storyline">Storyline:</string>
+    <string name="title">title</string>
+    <string name="parcel">movie_parcel</string>
+    <string name="single_movie">single_movie_parcelable</string>
+    <string name="small_poster">Small Poster</string>
+    <string name="description">Description</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="random_text">random_text</string>
+    <string name="user_rating">User Rating :</string>
+    <string name="release_date">Release Date :</string>
+    <string name="star_symbol_unicode"><![CDATA[&#10029;]]></string>
+</resources>
