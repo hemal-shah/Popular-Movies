@@ -49,7 +49,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
 
         final MovieParcelable movieParcelable = arrayList.get(position);
 
-        Picasso.with(this.context).load(movieParcelable.poster_path).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+        Picasso.with(this.context).load(movieParcelable.poster_path).placeholder(R.drawable.placeholder_movie).into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

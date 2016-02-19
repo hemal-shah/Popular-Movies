@@ -1,26 +1,27 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
-    <string name="action_settings">Settings</string>
-    <string name="api_key"></string>
-    <string name="popularity">Popularity</string>
-    <string name="highest_rating">Highest Rating</string>
-    <string name="poster">poster</string>
-    <string name="movie_poster">Movie Poster</string>
-    <string name="storyline">Storyline:</string>
-    <string name="title">title</string>
-    <string name="parcel">movie_parcel</string>
-    <string name="single_movie">single_movie_parcelable</string>
-    <string name="small_poster">Small Poster</string>
-    <string name="description">Description</string>
-    <string name="synopsis">Synopsis</string>
-    <string name="random_text">random_text</string>
-    <string name="user_rating">User Rating :</string>
-    <string name="release_date">Release Date :</string>
-    <string name="star_symbol_unicode"><![CDATA[&#10029;]]></string>
+    <string name="app_name" translatable="false">Popular Movies</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="api_key" translatable="false"></string>
+    <string name="popularity" translatable="true">Popularity</string>
+    <string name="highest_rating" translatable="true">Highest Rating</string>
+    <string name="poster" translatable="false">poster</string>
+    <string name="movie_poster" translatable="true">Movie Poster</string>
+    <string name="title" translatable="false">title</string>
+    <string name="parcel" translatable="false">movie_parcel</string>
+    <string name="single_movie" translatable="false">single_movie_parcelable</string>
+    <string name="small_poster" translatable="true">Small Poster</string>
+    <string name="description" translatable="true">Description</string>
+    <string name="synopsis" translatable="true">Synopsis</string>
+    <string name="random_text" translatable="false">random_text</string>
+    <string name="user_rating" translatable="true">User Rating :</string>
+    <string name="release_date" translatable="true">Release Date :</string>
+    <string name="star_symbol_unicode" translatable="false"><![CDATA[&#10029;]]></string>
 
 
     <!-- Used for sorting the items-->
-    <string name="popularity_sort">popularity</string>
-    <string name="rating_sort">vote_average</string>
-    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="popularity_sort" translatable="false">popularity</string>
+    <string name="rating_sort" translatable="false">vote_average</string>
+
+
+    <string name="something_went_wrong" translatable="true">Something went wrong!</string>
 </resources>
