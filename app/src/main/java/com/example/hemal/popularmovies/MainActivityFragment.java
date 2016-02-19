@@ -2,6 +2,7 @@ package com.example.hemal.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -32,17 +33,17 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /*
- *Fragment containing recyclerview to show a grid list of movies..
+ *Fragment containing recycler view to show a grid list of movies..
  */
-public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback{
+public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback {
 
 
     RecyclerView recyclerView;
-    GridLayoutManager gridLayoutManager;
+    Resources resources ;
     HomePageAdapter adapter;
     URL url = null;
     String BASE_URL = "http://api.themoviedb.org/3/discover/movie"; //base url to retrieve json data..
-    ArrayList<MovieParcelable> movieParcelables ;
+    ArrayList<MovieParcelable> movieParcelables;
 
 
     //for the json retrieval temp objects..
@@ -53,7 +54,6 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
     double popularity;
     float vote_average;
     //end of objects required in parsing json
-
 
 
     /*Defining all the element names used in the key value pairs in the json returned from themoviedb*/
@@ -78,41 +78,43 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         setHasOptionsMenu(true);
     }
 
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        resources = getActivity().getResources();
 
         /*
          * Retrieve data if the user has already downloaded the content..from saveInstanceState
          * */
 
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey(INSTANCE_KEY)){
+        if (savedInstanceState == null || !savedInstanceState.containsKey(INSTANCE_KEY)) {
             movieParcelables = new ArrayList<>();
-        }else {
+            preferenceMode(resources.getString(R.string.popularity_sort));
+        } else {
             movieParcelables = savedInstanceState.getParcelableArrayList(INSTANCE_KEY);
+            Log.i(TAG, "Data already stored...retrieved it.." + movieParcelables.toString());
         }
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        /*
-        * Save the user contents if already downloaded..
-        * */
 
-        outState.putParcelableArrayList(INSTANCE_KEY, movieParcelables);
-        super.onSaveInstanceState(outState);
-    }
+    public void preferenceMode(final String preference){
+        /**
+         * Method created to retrieve data from the moviedb.org website
+         * Based on the string "preference" tha json data will be retrieved and then displayed!
+         * */
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        final View v = inflater.inflate(R.layout.content_main, container, false);
+        movieParcelables.clear();
 
         //Creating the uri..
         Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter("sort_by", "popularity.desc")
+                .appendQueryParameter("sort_by", preference + ".desc")
                 .appendQueryParameter("api_key", getActivity().getString(R.string.api_key))
                 .build();
         try {
@@ -123,8 +125,8 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
 
         /*
-         * JsonObjectRequest is a method defined in the volley library to retrieve json from a url.
-         * If in need to retrieve an json object use JsonArrayRequest
+         * JsonObjectRequest is a method defined in the volley library to retrieve json object from a url.
+         * If in need to retrieve an json array use JsonArrayRequest
          */
 
 
@@ -137,7 +139,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
                     public void onResponse(JSONObject response) {
                         try {
                             jsonArray = response.getJSONArray(RESULTS);
-                            for(int i = 0; i < jsonArray.length(); i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
 
                                 singleObjectResult = jsonArray.getJSONObject(i);
                                 poster_path = IMAGE_BASE_URL + singleObjectResult.getString(POSTER_PATHS);
@@ -151,27 +153,49 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
                                 movieParcelables.add(new MovieParcelable(title, release_date, poster_path, overview, backdrop_path, id, vote_average, popularity));
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
+                            if(adapter != null){
+                                adapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            Log.i(TAG, e.toString());
+                        }
                     }
                 },
                 new Response.ErrorListener() { //action to be performed on error
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Snackbar.make(v, "Some error occurred!", Snackbar.LENGTH_SHORT).show();
+                        if(recyclerView != null){
+                            Snackbar.make(recyclerView, resources.getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 }
         );
 
         ApplicationClass.getInstance().addToRequestQueue(jsonObjectRequest, TAG);
 
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        /*
+        * Saving the user's data.
+        * */
+
+        outState.putParcelableArrayList(INSTANCE_KEY, movieParcelables);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        final View v = inflater.inflate(R.layout.content_main, container, false);
+
         recyclerView = (RecyclerView) v.findViewById(R.id.rv_content_main);
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        }
-        else{
+        } else {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
         }
         adapter = new HomePageAdapter(getActivity(), R.layout.single_movie_poster_image, movieParcelables, MainActivityFragment.this);
@@ -197,41 +221,23 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         * */
 
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.menu_highest_rating:
-                sortOrder(0);
-                if(item.isChecked())
+                preferenceMode(resources.getString(R.string.rating_sort));
+                if (item.isChecked())
                     item.setChecked(false);
                 else
                     item.setChecked(true);
                 return true;
             case R.id.menu_popularity:
-                sortOrder(1);
-                if(item.isChecked())
+                preferenceMode(resources.getString(R.string.popularity_sort));
+                if (item.isChecked())
                     item.setChecked(false);
                 else
                     item.setChecked(true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void sortOrder(int method){
-
-        /*
-        * This method is used to sort the arrayList based on the int "method"
-        * if method = 0 then sort using the RatingComparator class i.e. sort based on rating
-        * if method = 1 then sort using the PopularityComparator class i.e. sort based on popularity
-        * */
-
-        if(method == 0){
-            Collections.sort(movieParcelables, new RatingComparator());
-        }else if(method == 1){
-            Collections.sort(movieParcelables, new PopularityComparator());
-        }
-
-        //Finally after sorting the arraylist, we need to show this change on the UI
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -246,36 +252,6 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         newActivity.putExtra(getActivity().getResources().getString(R.string.parcel), movieParcelable);
         startActivity(newActivity);
     }
-
-    public class PopularityComparator implements Comparator<MovieParcelable>{
-
-        /*
-        * This class implements comparator interface
-        * so that when Collections.sort(List<T> ..) is called
-        * it can be compared on the basis of popularity...and then so the adapter can be notified about the change
-        * */
-
-        @Override
-        public int compare(MovieParcelable lhs, MovieParcelable rhs) {
-            return (int)(rhs.popularity - lhs.popularity);
-        }
-    }
-
-    public class RatingComparator implements Comparator<MovieParcelable>{
-
-        /*
-        * This class implements comparator interface
-        * so that when Collections.sort(List<T> ..) is called
-        * it can be compared on the basis of rating retrieved with the data...and then so the adapter can be notified about the change
-        * */
-
-        @Override
-        public int compare(MovieParcelable lhs, MovieParcelable rhs) {
-            return (int)(rhs.vote_average - lhs.vote_average);
-        }
-    }
-
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         /*
@@ -283,9 +259,9 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         * */
 
         super.onConfigurationChanged(newConfig);
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         }
     }

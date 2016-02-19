@@ -17,4 +17,10 @@
     <string name="user_rating">User Rating :</string>
     <string name="release_date">Release Date :</string>
     <string name="star_symbol_unicode"><![CDATA[&#10029;]]></string>
+
+
+    <!-- Used for sorting the items-->
+    <string name="popularity_sort">popularity</string>
+    <string name="rating_sort">vote_average</string>
+    <string name="something_went_wrong">Something went wrong!</string>
 </resources>
