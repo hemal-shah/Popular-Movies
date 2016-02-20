@@ -29,8 +29,12 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /*
  *Fragment containing recycler view to show a grid list of movies..
@@ -38,7 +42,7 @@ import java.util.Comparator;
 public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback {
 
 
-    RecyclerView recyclerView;
+    @Bind(R.id.rv_content_main) RecyclerView recyclerView;
     Resources resources ;
     HomePageAdapter adapter;
     URL url = null;
@@ -173,8 +177,6 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         );
 
         ApplicationClass.getInstance().addToRequestQueue(jsonObjectRequest, TAG);
-
-
     }
 
     @Override
@@ -192,7 +194,8 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
         final View v = inflater.inflate(R.layout.content_main, container, false);
 
-        recyclerView = (RecyclerView) v.findViewById(R.id.rv_content_main);
+        ButterKnife.bind(this, v);
+
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         } else {

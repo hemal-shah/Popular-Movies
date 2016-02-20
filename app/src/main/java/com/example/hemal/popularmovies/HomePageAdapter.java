@@ -7,13 +7,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by hemal on 11/2/16.
  */
-public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHolder>{
+public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHolder> {
 
     /*
     * This adapter is to view a list of images of the movies to user on the main page.
@@ -25,8 +31,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
     Callback callback;
     private static final String TAG = HomePageAdapter.class.getSimpleName();
 
-    HomePageAdapter(Context context, int layout_resource, ArrayList<MovieParcelable> arrayList, MainActivityFragment object){
-
+    HomePageAdapter(Context context, int layout_resource, ArrayList<MovieParcelable> arrayList, MainActivityFragment object) {
         this.context = context;
         this.layout_resource = layout_resource;
         this.arrayList = arrayList;
@@ -54,12 +59,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                * Whenever user clicks on any one of the imageview pass the movieParcelable object related to that image
-                * back to the Activity/Fragment containing that recyclerView
-                * */
 
-                if(callback != null){
+                /* Whenever user clicks on any one of the imageview pass the movieParcelable object related to that image
+                * back to the Activity/Fragment containing that recyclerView
+                */
+
+                if (callback != null) {
                     callback.itemClicked(movieParcelable);
                 }
             }
@@ -75,22 +80,24 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHo
         * so if the arraylist is empty or is null, return 0 else return the size.
         * */
 
-        return (arrayList.size() == 0 || arrayList == null)? 0: arrayList.size();
+        return (arrayList.size() == 0 || arrayList == null) ? 0 : arrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         /*
         * Simple viewHolder for the main page of the screen.
         * */
+        @Bind(R.id.imageView_single_movie_poster_image)
         ImageView imageView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            this.imageView = (ImageView) itemView.findViewById(R.id.imageView_single_movie_poster_image);
+            ButterKnife.bind(this, itemView);
         }
 
     }
 
-    public interface Callback{
+    public interface Callback {
         /*
         * Simple touch interface created to handle user touch events.
         * As the main purpose of "ADAPTERS" is to handle view creation according to requirement

@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String MAIN_ACTIVITY_FRAGMENT_TAG = "MainActivityFragment";
 
-    Toolbar toolbar ;
+    @Bind(R.id.toolbar_activity_main) Toolbar toolbar ;
 
     /*
     * This is our main page for the application.
@@ -25,9 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar_activity_main);
         setSupportActionBar(toolbar);
 
 

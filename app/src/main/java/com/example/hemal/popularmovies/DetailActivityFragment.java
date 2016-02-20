@@ -12,15 +12,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by hemal on 14/2/16.
  */
 public class DetailActivityFragment extends Fragment {
 
-    RelativeLayout main_container;
-    ImageView bigPoster, smallPoster;
-    TextView title, description, release_date, user_rating;
-    View container_description;
+    @Bind(R.id.rl_detail_activity) RelativeLayout main_container;
+    @Bind(R.id.main_poster_detail_activity) ImageView bigPoster;
+    @Bind(R.id.small_poster_detail_activity) ImageView smallPoster;
+    @Bind(R.id.tv_title_detail_page) TextView title;   //, description, release_date, user_rating;
+    @Bind(R.id.description_detail) TextView description;
+    @Bind(R.id.user_rating_description) TextView user_rating;
+    @Bind(R.id.release_date_description) TextView release_date;
 
 
     private static final String TAG = DetailActivityFragment.class.getSimpleName();
@@ -31,8 +37,6 @@ public class DetailActivityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         /*
         * Getting a reference to the parcelable object passed on..
         * */
@@ -43,23 +47,7 @@ public class DetailActivityFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.detail_activity, container, false);
 
-        /*
-        * Binding the widgets which are directly present in the view.
-        * */
-        main_container = (RelativeLayout) v.findViewById(R.id.rl_detail_activity);
-        bigPoster = (ImageView) main_container.findViewById(R.id.main_poster_detail_activity);
-        smallPoster = (ImageView) main_container.findViewById(R.id.small_poster_detail_activity);
-        title = (TextView) main_container.findViewById(R.id.tv_title_detail_page);
-
-        /*
-        * Retrieving the view "included" into the xml file.
-        * Then binding the widgets present in that view through that view!
-        * */
-        container_description = main_container.findViewById(R.id.description_container);
-        description = (TextView) container_description.findViewById(R.id.description_detail);
-        user_rating = (TextView) container_description.findViewById(R.id.user_rating_description);
-        release_date = (TextView) container_description.findViewById(R.id.release_date_description);
-
+        ButterKnife.bind(this, v);
 
         Picasso.with(getActivity()).load(movieParcelable.backdrop_path).into(bigPoster);
         Picasso.with(getActivity()).load(movieParcelable.poster_path).into(smallPoster);
