@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Popular Movies</string>
     <string name="action_settings" translatable="false">Settings</string>
-    <string name="api_key" translatable="false">6c44ac47f1d53e3d23a1acbf18846d1b</string>
+    <string name="api_key" translatable="false"></string>
     <string name="popularity" translatable="true">Popularity</string>
     <string name="highest_rating" translatable="true">Highest Rating</string>
     <string name="poster" translatable="false">poster</string>
@@ -24,4 +24,5 @@
 
 
     <string name="something_went_wrong" translatable="true">Something went wrong!</string>
+    <string name="data_fail">Data can\'t be retrieved! \n Try again later.</string>
 </resources>
