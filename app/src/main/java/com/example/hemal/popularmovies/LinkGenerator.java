@@ -17,6 +17,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import retrofit2.http.Url;
+
 /**
  * Created by hemal on 20/2/16.
  */
@@ -26,7 +28,6 @@ public class LinkGenerator {
     /**
      * 1) Retrieve movie list (Popularity)= http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=6c44ac47f1d53e3d23a1acbf18846d1b
      * 1.1) Vote_average = http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=6c44ac47f1d53e3d23a1acbf18846d1b
-     * 2) Youtube link = http://api.themoviedb.org/3/movie/293660/videos?api_key=6c44ac47f1d53e3d23a1acbf18846d1b
      * */
 
 
@@ -63,6 +64,10 @@ public class LinkGenerator {
     private static final String POPULARITY = "popularity";
     private static final String VOTE_AVERAGE = "vote_average";
     private static final String BACKDROP_PATH = "backdrop_path";
+    private static final String MOVIE_BASE_LINK = "http://api.themoviedb.org/3/movie/";
+    private static final String SITE = "site";
+    private static final String KEY = "key";
+    private static final String YOUTUBE = "YouTube";
 
     /*Done defining constant strings*/
 
@@ -160,5 +165,64 @@ public class LinkGenerator {
     public interface DataUpdate {
         void onDataLoaded();
         void onDataLoadFail();
+    }
+
+    public interface SingleMovieDataUpdate{
+        void onTrailersLoaded();
+    }
+
+    private static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
+
+    public ArrayList<String> getTrailerLinks(int id){
+        Uri uri = Uri.parse(MOVIE_BASE_LINK).buildUpon()
+                .appendEncodedPath(String.valueOf(id))
+                .appendEncodedPath("videos")
+                .appendQueryParameter("api_key", mContext.getString(R.string.api_key))
+                .build();
+
+        final ArrayList<String> responseList = new ArrayList<>();
+
+        JsonObjectRequest jsonObjectRequest = null;
+        try{
+            URL url = new URL(uri.toString());
+
+            jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    url.toString(),
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONArray jsonArray = response.getJSONArray(RESULTS);
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject tempObject = jsonArray.getJSONObject(i);
+                                    String site = tempObject.getString(SITE);
+                                    if(site.equalsIgnoreCase(YOUTUBE)){
+                                        String key = tempObject.getString(KEY);
+                                        responseList.add(YOUTUBE_BASE_LINK + key);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }
+            );
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        ApplicationClass.getInstance().addToRequestQueue(jsonObjectRequest);
+        return responseList;
     }
 }

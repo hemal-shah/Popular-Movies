@@ -25,4 +25,20 @@
 
     <string name="something_went_wrong" translatable="true">Something went wrong!</string>
     <string name="data_fail">Data can\'t be retrieved! \n Try again later.</string>
+
+
+    <!-- string resources when user clicks on fab in the detail activity-->
+    <string-array name="dialog_items_0">
+        <item>Mark Favourite</item>
+        <item>Trailers</item>
+        <item>Reviews</item>
+    </string-array>
+
+    <string-array name="dialog_items_1">
+        <item>Remove Favourite</item>
+        <item>Trailers</item>
+        <item>Reviews</item>
+    </string-array>
+
+
 </resources>
