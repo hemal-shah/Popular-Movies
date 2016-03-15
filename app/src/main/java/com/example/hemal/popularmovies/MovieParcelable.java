@@ -19,9 +19,7 @@ public class MovieParcelable implements Parcelable {
     * 6) backdrop_path (String)
     * 7) vote average (float)
     * 8) popularity (double)
-    *
-    * //now mostly top 20 results show no video available, so skipping those part..
-    * */
+    **/
 
 
     String title, release_date, poster_path, overview, backdrop_path;

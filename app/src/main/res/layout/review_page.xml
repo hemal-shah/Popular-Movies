@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_review_page"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="?android:attr/actionBarSize"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_review_page"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+</LinearLayout>
+

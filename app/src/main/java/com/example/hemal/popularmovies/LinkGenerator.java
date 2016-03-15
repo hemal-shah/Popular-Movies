@@ -24,17 +24,11 @@ import retrofit2.http.Url;
  */
 public class LinkGenerator {
 
-
-    /**
-     * 1) Retrieve movie list (Popularity)= http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=6c44ac47f1d53e3d23a1acbf18846d1b
-     * 1.1) Vote_average = http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=6c44ac47f1d53e3d23a1acbf18846d1b
-     * */
-
-
     private static final String TAG = LinkGenerator.class.getSimpleName();
 
     ArrayList<MovieParcelable> movieParcelables;
-    Context mContext ;
+    ArrayList<ReviewParcelable> reviewParcelables;
+    Context mContext;
 
 
     //for the json retrieval temp objects..
@@ -72,21 +66,29 @@ public class LinkGenerator {
     /*Done defining constant strings*/
 
 
-
-    public LinkGenerator(Context mContext, MainActivityFragment object){
+    public LinkGenerator(Context mContext, MainActivityFragment object) {
         movieParcelables = new ArrayList<>();
         this.mContext = mContext;
         this.mDataUpdate = object;
     }
 
 
+    public LinkGenerator(Context mContext) {
+        this.mContext = mContext;
+    }
+
+
+    public LinkGenerator(Context mContext, ReviewClass object) {
+        this.mContext = mContext;
+        this.mDataUpdate = object;
+    }
 
     /**
      * @param preference Specifies in what order you want to generate the list of movies. Options are currently either
      *                   based on popularity or rating.
      * @return Returns a list of movies, in a form of arraylist so that it can be displayed in an adapter.
      */
-    public ArrayList<MovieParcelable> preferenceMode(final String preference){
+    public ArrayList<MovieParcelable> preferenceMode(final String preference) {
         /**
          * Method created to retrieve data from the moviedb.org website
          * Based on the string "preference" tha json data will be retrieved and then displayed!
@@ -158,22 +160,23 @@ public class LinkGenerator {
     /**
      * Interface created to update the calling class when the data is completely loaded so that they can display it,
      * or if the dataload failed, so that they can display any error messages.
-     *
-     *
+     * <p/>
+     * <p/>
      * Exception management not possible currently. TODO : add exception management.
      */
     public interface DataUpdate {
         void onDataLoaded();
+
         void onDataLoadFail();
     }
 
-    public interface SingleMovieDataUpdate{
+    public interface SingleMovieDataUpdate {
         void onTrailersLoaded();
     }
 
     private static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
 
-    public ArrayList<String> getTrailerLinks(int id){
+    public ArrayList<String> getTrailerLinks(int id) {
         Uri uri = Uri.parse(MOVIE_BASE_LINK).buildUpon()
                 .appendEncodedPath(String.valueOf(id))
                 .appendEncodedPath("videos")
@@ -183,7 +186,7 @@ public class LinkGenerator {
         final ArrayList<String> responseList = new ArrayList<>();
 
         JsonObjectRequest jsonObjectRequest = null;
-        try{
+        try {
             URL url = new URL(uri.toString());
 
             jsonObjectRequest = new JsonObjectRequest(
@@ -195,10 +198,10 @@ public class LinkGenerator {
                         public void onResponse(JSONObject response) {
                             try {
                                 JSONArray jsonArray = response.getJSONArray(RESULTS);
-                                for (int i = 0; i < jsonArray.length(); i++){
+                                for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject tempObject = jsonArray.getJSONObject(i);
                                     String site = tempObject.getString(SITE);
-                                    if(site.equalsIgnoreCase(YOUTUBE)){
+                                    if (site.equalsIgnoreCase(YOUTUBE)) {
                                         String key = tempObject.getString(KEY);
                                         responseList.add(YOUTUBE_BASE_LINK + key);
                                     }
@@ -225,4 +228,59 @@ public class LinkGenerator {
         ApplicationClass.getInstance().addToRequestQueue(jsonObjectRequest);
         return responseList;
     }
+
+
+    public ArrayList<ReviewParcelable> getReviewParcelables(int id) {
+        Uri uri = Uri.parse(MOVIE_BASE_LINK).buildUpon()
+                .appendEncodedPath(String.valueOf(id))
+                .appendEncodedPath("reviews")
+                .appendQueryParameter("api_key", mContext.getResources().getString(R.string.api_key))
+                .build();
+
+
+        reviewParcelables = new ArrayList<>();
+        try {
+            URL url = new URL(uri.toString());
+            Log.i(TAG, url.toString());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    url.toString(),
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                Log.i(TAG, "The response is : " + response.toString());
+                                JSONArray jsonArray = response.getJSONArray(RESULTS);
+                                JSONObject jsonObject;
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    jsonObject = jsonArray.getJSONObject(i);
+                                    String author = jsonObject.getString("author");
+                                    String review = jsonObject.getString("content");
+                                    reviewParcelables.add(new ReviewParcelable(review, author));
+                                }
+                                mDataUpdate.onDataLoaded();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            mDataUpdate.onDataLoadFail();
+                        }
+                    }
+            );
+
+
+            ApplicationClass.getInstance().addToRequestQueue(jsonObjectRequest);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        return reviewParcelables;
+    }
+
 }
