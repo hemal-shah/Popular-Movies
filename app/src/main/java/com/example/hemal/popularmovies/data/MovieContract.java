@@ -4,16 +4,20 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 /**
  * Created by hemal on 15/3/16.
  */
 public class MovieContract {
 
+    private static final String TAG = MovieContract.class.getSimpleName();
+
     //The content authority for content providers!
     public static final String CONTENT_AUTHORITY = "com.example.hemal.popularmovies";
 
     //Creating the base of all URI's
+    //Looks like: content://com.example.hemal.popularmovies.
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     //We want to add the path as content://com.example.hemal.popularmovies/movies.
@@ -23,6 +27,7 @@ public class MovieContract {
     public static final class MovieEntry implements BaseColumns{
 
         //Creating the uri for accessing the data.
+        //Looks like : "content://com.example.hemal.popularmovies/movies"
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_MOVIES).build();
 
@@ -30,6 +35,7 @@ public class MovieContract {
         //content type and content item type
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES;
+
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIES;
 
@@ -49,6 +55,13 @@ public class MovieContract {
 
 
         public static Uri buildMovieUri(long id){
+
+            /**
+             * Function to build a uri to access a single row
+             * from the database to view in the detailactivityfragment
+             */
+
+            Log.i(TAG, "The appended uri is " + ContentUris.withAppendedId(CONTENT_URI, id));
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

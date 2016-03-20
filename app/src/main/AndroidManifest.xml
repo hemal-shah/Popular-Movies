@@ -35,6 +35,11 @@
 
         </activity>
 
+
+        <provider
+            android:authorities="com.example.hemal.popularmovies"
+            android:name=".data.MovieProvider"
+            />
     </application>
 
 </manifest>
