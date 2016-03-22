@@ -60,7 +60,7 @@ public class MovieProvider extends ContentProvider {
          */
         switch (uriMatcher.match(uri)){
             case MOVIE:
-                sqLiteQueryBuilder.query(
+                returnCursor = sqLiteQueryBuilder.query(
                         movieDBHelper.getReadableDatabase(), //database to query
                         projection, //which cols to retrieve
                         selection, //the where clause

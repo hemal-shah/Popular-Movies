@@ -1,23 +1,23 @@
 package com.example.hemal.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
+import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import retrofit2.http.Url;
+import com.example.hemal.popularmovies.data.MovieContract.MovieEntry;
 
 /**
  * Created by hemal on 20/2/16.
@@ -241,7 +241,6 @@ public class LinkGenerator {
         reviewParcelables = new ArrayList<>();
         try {
             URL url = new URL(uri.toString());
-            Log.i(TAG, url.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     url.toString(),
@@ -250,7 +249,6 @@ public class LinkGenerator {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                Log.i(TAG, "The response is : " + response.toString());
                                 JSONArray jsonArray = response.getJSONArray(RESULTS);
                                 JSONObject jsonObject;
                                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -283,4 +281,35 @@ public class LinkGenerator {
         return reviewParcelables;
     }
 
+    /**
+     * Created just for testing right now
+     * <p/>
+     * Both two methods are working
+     *
+     * @param object
+     */
+    private void insertMoviesToDB(MovieParcelable object) {
+        ContentValues values = new ContentValues();
+        values.put(MovieEntry.COLUMN_MOVIE_ID, object.id);
+        values.put(MovieEntry.COLUMN_OVERVIEW, object.overview);
+        values.put(MovieEntry.COLUMN_BACKDROP_PATH, object.backdrop_path);
+        values.put(MovieEntry.COLUMN_POPULARITY, object.popularity);
+        values.put(MovieEntry.COLUMN_VOTE_AVG, object.vote_average);
+        values.put(MovieEntry.COLUMN_POSTER_PATH, object.poster_path);
+        values.put(MovieEntry.COLUMN_TITLE, object.title);
+        values.put(MovieEntry.COLUMN_RELEASE_DATE, object.release_date);
+
+        Uri uri = this.mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, values);
+    }
+
+    private void showData() {
+
+        Cursor c = this.mContext.getContentResolver().query(MovieEntry.CONTENT_URI, new String[]{"*"}, null, null, null);
+        while (c.moveToNext()) {
+            Toast.makeText(this.mContext, c.getString(c.getColumnIndex(MovieEntry.COLUMN_TITLE)), Toast.LENGTH_SHORT).show();
+        }
+        c.close();
+    }
+
+    
 }
