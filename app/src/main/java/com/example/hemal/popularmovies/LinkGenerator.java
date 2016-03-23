@@ -137,7 +137,6 @@ public class LinkGenerator {
 
                                 movieParcelables.add(new MovieParcelable(title, release_date, poster_path, overview, backdrop_path, id, vote_average, popularity));
                             }
-
                             mDataUpdate.onDataLoaded();
                         } catch (JSONException e) {
                             Log.i(TAG, e.toString());
@@ -304,12 +303,39 @@ public class LinkGenerator {
 
     private void showData() {
 
-        Cursor c = this.mContext.getContentResolver().query(MovieEntry.CONTENT_URI, new String[]{"*"}, null, null, null);
+        Cursor c = this.mContext.getContentResolver().query(MovieEntry.CONTENT_URI, null, null, null, null);
         while (c.moveToNext()) {
             Toast.makeText(this.mContext, c.getString(c.getColumnIndex(MovieEntry.COLUMN_TITLE)), Toast.LENGTH_SHORT).show();
         }
         c.close();
     }
 
+    /**
+     * Another metod for bulkInsert
+     * sample testing only
+     * Sample check done
+     * Problem: As the insert method, bulkInsert doesn't throw error when the data is tried to be inserted again
+     * into the table, primary key constraint is present.
+     * log entries do show errors
+     * but the app doesn't crash in doing so.
+     */
 
+    private void bulkInsertMovieData(ArrayList<MovieParcelable> movies){
+
+        int i = 0;
+        ContentValues[] values= new ContentValues[movies.size()];
+        for(MovieParcelable object : movies){
+            values[i] = new ContentValues();
+            values[i].put(MovieEntry.COLUMN_MOVIE_ID, object.id);
+            values[i].put(MovieEntry.COLUMN_OVERVIEW, object.overview);
+            values[i].put(MovieEntry.COLUMN_BACKDROP_PATH, object.backdrop_path);
+            values[i].put(MovieEntry.COLUMN_POPULARITY, object.popularity);
+            values[i].put(MovieEntry.COLUMN_VOTE_AVG, object.vote_average);
+            values[i].put(MovieEntry.COLUMN_POSTER_PATH, object.poster_path);
+            values[i].put(MovieEntry.COLUMN_TITLE, object.title);
+            values[i].put(MovieEntry.COLUMN_RELEASE_DATE, object.release_date);
+            i++;
+        }
+        int rows = this.mContext.getContentResolver().bulkInsert(MovieEntry.CONTENT_URI, values);
+    }
 }

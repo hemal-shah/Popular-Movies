@@ -3,9 +3,12 @@ package com.example.hemal.popularmovies;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
  */
 
 
-public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, LinkGenerator.DataUpdate {
+public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, LinkGenerator.DataUpdate, LoaderManager.LoaderCallbacks<Cursor>{
 
 
     @Bind(R.id.rv_content_main) RecyclerView recyclerView;
@@ -185,5 +188,20 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         if(recyclerView != null){
             Snackbar.make(recyclerView, resources.getString(R.string.data_fail), Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
