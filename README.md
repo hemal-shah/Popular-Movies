@@ -11,3 +11,8 @@ Please insert your API key in this file : Popular-Movies/app/src/main/res/values
     ...
 </resources>
 ```
+
+This app has currently following things left to implement:
+1) Create a table to store images corresponding to links.
+2) Load those images from table when network connection is not awailable.
+3) Sharing functionality.
