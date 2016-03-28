@@ -21,7 +21,7 @@ import butterknife.OnClick;
  */
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.ViewHolder> {
 
-    /*
+    /**
     * This adapter is to view a list of images of the movies to user on the main page.
     * */
 

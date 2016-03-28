@@ -3,12 +3,9 @@ package com.example.hemal.popularmovies;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,7 +25,7 @@ import butterknife.ButterKnife;
  */
 
 
-public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, LinkGenerator.DataUpdate, LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, DataGenerator.DataUpdate{
 
 
     @Bind(R.id.rv_content_main) RecyclerView recyclerView;
@@ -38,7 +34,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
     private static final String INSTANCE_KEY = "movie_data";
     ArrayList<MovieParcelable> movieParcelables;
-    LinkGenerator linkGenerator;
+    DataGenerator dataGenerator;
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
 
@@ -52,7 +48,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         super.onCreate(savedInstanceState);
 
         resources = getActivity().getResources();
-        linkGenerator = new LinkGenerator(getActivity(), this);
+        dataGenerator = new DataGenerator(getActivity(), this);
 
         /*
          * Retrieve data if the user has already downloaded the content..from saveInstanceState
@@ -60,7 +56,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(INSTANCE_KEY)) {
-            movieParcelables = linkGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
+            movieParcelables = dataGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
         } else {
             movieParcelables = savedInstanceState.getParcelableArrayList(INSTANCE_KEY);
             if(adapter != null){
@@ -117,7 +113,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_highest_rating:
-                movieParcelables  = linkGenerator.preferenceMode(resources.getString(R.string.rating_sort));
+                movieParcelables  = dataGenerator.preferenceMode(resources.getString(R.string.rating_sort));
                 adapter.notifyDataSetChanged();
                 if (item.isChecked())
                     item.setChecked(false);
@@ -125,9 +121,17 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
                     item.setChecked(true);
                 return true;
             case R.id.menu_popularity:
-                movieParcelables = linkGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
+                movieParcelables = dataGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
                 adapter.notifyDataSetChanged();
                 if (item.isChecked())
+                    item.setChecked(false);
+                else
+                    item.setChecked(true);
+                return true;
+            case R.id.favourites_movie:
+                movieParcelables = dataGenerator.retrieveDataFromDB();
+                adapter.notifyDataSetChanged();
+                if(item.isChecked())
                     item.setChecked(false);
                 else
                     item.setChecked(true);
@@ -168,7 +172,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
     }
 
     /**
-     * When the url is passed to the LinkGenerator class, it returns before the data is retrieved.
+     * When the url is passed to the DataGenerator class, it returns before the data is retrieved.
      * So, when the data is completely retrieved, this method is called, so that the adapter can be notified
      * and the contents can be shown in the UI.
      */
@@ -190,18 +194,4 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 }

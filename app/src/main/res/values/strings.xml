@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Popular Movies</string>
     <string name="action_settings" translatable="false">Settings</string>
-    <string name="api_key" translatable="false"></string>
+    <string name="api_key" translatable="false">6c44ac47f1d53e3d23a1acbf18846d1b</string>
     <string name="popularity" translatable="true">Popularity</string>
     <string name="highest_rating" translatable="true">Highest Rating</string>
     <string name="poster" translatable="false">poster</string>
@@ -28,6 +28,14 @@
     <string name="movie_id">movie_id</string>
     <string name="movie_name">movie_name</string>
     <string name="no_data">Please connect to internet to load content!</string>
+    <string name="some_error_occured">Some error occured!</string>
+    <string name="marked_as_favourite">Marked as favourite!</string>
+    <string name="marking_as_favourite">Marking as favourite!</string>
+    <string name="no">No</string>
+    <string name="cant_remove_from_favourites">Can\'t remove from favourites!</string>
+    <string name="removed_from_favourites">Removed from favourites!</string>
+    <string name="removing_from_favourites">Removing from favourites!</string>
+    <string name="favourites">My Favourites</string>
 
 
     <!-- string resources when user clicks on fab in the detail activity-->

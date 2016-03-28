@@ -17,12 +17,12 @@ import butterknife.ButterKnife;
 /**
  * Created by hemal on 13/3/16.
  */
-public class ReviewClass extends AppCompatActivity implements LinkGenerator.DataUpdate {
+public class ReviewClass extends AppCompatActivity implements DataGenerator.DataUpdate {
 
 
     @Bind(R.id.rv_review_page) RecyclerView recyclerView;
     ArrayList<ReviewParcelable> arrayList = null;
-    LinkGenerator linkGenerator;
+    DataGenerator dataGenerator;
     ReviewAdapter adapter;
     String movie_name;
     int movieID;
@@ -42,8 +42,8 @@ public class ReviewClass extends AppCompatActivity implements LinkGenerator.Data
         movie_name = incomingIntent.getStringExtra(getString(R.string.movie_name));
 
 
-        linkGenerator = new LinkGenerator(this, this);
-        arrayList = linkGenerator.getReviewParcelables(movieID);
+        dataGenerator = new DataGenerator(this, this);
+        arrayList = dataGenerator.getReviewParcelables(movieID);
         adapter = new ReviewAdapter(this, arrayList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
@@ -68,8 +68,6 @@ public class ReviewClass extends AppCompatActivity implements LinkGenerator.Data
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setTitle(movie_name);
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 }

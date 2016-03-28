@@ -8,6 +8,11 @@ import android.util.Log;
 
 /**
  * Created by hemal on 15/3/16.
+ *
+ * Describes how the database is been created by containing the following:
+ * 1) a class which implement base columns indicating a table in the database
+ * 2) that class again contains an URI to access that table through ContentResolver
+ *
  */
 public class MovieContract {
 
@@ -60,8 +65,6 @@ public class MovieContract {
              * Function to build a uri to access a single row
              * from the database to view in the detailactivityfragment
              */
-
-            Log.i(TAG, "The appended uri is " + ContentUris.withAppendedId(CONTENT_URI, id));
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

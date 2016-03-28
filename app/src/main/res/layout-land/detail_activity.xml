@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_more_horiz_white_24dp"
+        android:src="@drawable/ic_add_black_48dp"
         app:elevation="@dimen/fab_elevation"
         app:fabSize="normal" />
 
@@ -73,7 +73,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:visibility="invisible"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="180dp"
         app:fabSize="mini" />
 
     <android.support.design.widget.FloatingActionButton
@@ -86,7 +86,7 @@
         android:layout_marginLeft="@dimen/fab_margin_mini"
         android:src="@drawable/ic_play_arrow_black_24dp"
         android:visibility="invisible"
-        android:layout_marginBottom="110dp"
+        android:layout_marginBottom="130dp"
         android:layout_alignParentBottom="true"
         app:fabSize="mini" />
 
@@ -99,7 +99,7 @@
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_rate_review_black_24dp"
         android:visibility="invisible"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="80dp"
         android:layout_marginLeft="@dimen/fab_margin_mini"
         app:fabSize="mini" />
 </RelativeLayout>

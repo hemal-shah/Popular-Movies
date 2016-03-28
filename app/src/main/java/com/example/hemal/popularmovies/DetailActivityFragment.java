@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,14 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,9 +37,8 @@ public class DetailActivityFragment extends Fragment{
     @Bind(R.id.tv_title_detail_page) TextView title;   //, description, release_date, user_rating;
     @Bind(R.id.description_detail) TextView description;
     @Bind(R.id.user_rating_description) TextView user_rating;
-    @Bind(R.id.release_date_description) TextView release_date;
-
     @Bind(R.id.fab_detail_activity) FloatingActionButton fab;
+    @Bind(R.id.release_date_description) TextView release_date;
     @Bind(R.id.fab_favourite) FloatingActionButton favourite;
     @Bind(R.id.fab_reviews) FloatingActionButton reviews;
     @Bind(R.id.fab_trailers) FloatingActionButton trailers;
@@ -49,8 +47,9 @@ public class DetailActivityFragment extends Fragment{
     ArrayList<String> trailerLinks = null;
 
     private boolean menuShown = false;
+    private boolean isAlreadyFavourite = false; //Indicates whether the movie is already marked favourite.
 
-    LinkGenerator linkGenerator;
+    DataGenerator dataGenerator;
 
     Resources resources;
 
@@ -58,8 +57,6 @@ public class DetailActivityFragment extends Fragment{
     public DetailActivityFragment(){
     }
 
-
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /*
@@ -70,13 +67,13 @@ public class DetailActivityFragment extends Fragment{
                 .getString(R.string.single_movie));
         resources = getActivity().getResources();
 
-
         View v = inflater.inflate(R.layout.detail_activity, container, false);
 
 
-        linkGenerator = new LinkGenerator(getActivity());
-        trailerLinks = linkGenerator.getTrailerLinks(movieParcelable.id);
+        dataGenerator = new DataGenerator(getActivity());
+        trailerLinks = dataGenerator.getTrailerLinks(movieParcelable.id);
         ButterKnife.bind(this, v);
+
 
         Picasso.with(getActivity()).load(movieParcelable.backdrop_path).into(bigPoster);
         Picasso.with(getActivity()).load(movieParcelable.poster_path).into(smallPoster);
@@ -115,7 +112,11 @@ public class DetailActivityFragment extends Fragment{
 
         Animation animationShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         Animation animationHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
+        final OvershootInterpolator interpolator = new OvershootInterpolator();
+
         if(menuShown){
+
+            ViewCompat.animate(fab).rotation(0f).withLayer().setDuration(100).setInterpolator(interpolator).start();
 
             favourite.startAnimation(animationHide);
             favourite.setClickable(false);
@@ -128,7 +129,7 @@ public class DetailActivityFragment extends Fragment{
 
             menuShown = !menuShown;
         } else {
-
+            ViewCompat.animate(fab).rotation(45f).withLayer().setDuration(100).setInterpolator(interpolator).start();
             favourite.startAnimation(animationShow);
             favourite.setClickable(true);
 
@@ -179,14 +180,57 @@ public class DetailActivityFragment extends Fragment{
         startActivity(intent);
     }
 
+
+    @OnClick(R.id.fab_favourite)
+    public void toggleFavourite(){
+
+        /**
+         * First check whether the movie is already marked as favourite or not
+         * If marked as favourite => Ask user if he/she wants to remove it from favourites.
+         * If not, simple add it to the database.
+         */
+
+
+        isAlreadyFavourite = dataGenerator.queryForExistingMovie(movieParcelable.id);
+
+        if(menuShown)
+            toggleFloatingSubMenu();
+
+        if(isAlreadyFavourite){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(movieParcelable.title)
+                    .setMessage("This movie is already marked as favourite. Do you want to remove it from favourites?")
+                    .setCancelable(true)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Snackbar.make(main_container, R.string.removing_from_favourites, Snackbar.LENGTH_SHORT).show();
+                            boolean isDeleted = dataGenerator.removeFromFavourites(movieParcelable.id);
+                            if(isDeleted){
+                                Snackbar.make(main_container, R.string.removed_from_favourites, Snackbar.LENGTH_SHORT).show();
+                                isAlreadyFavourite = false;
+                            } else{
+                                Snackbar.make(main_container, R.string.cant_remove_from_favourites, Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else{
+            Snackbar.make(getView(), R.string.marking_as_favourite, Snackbar.LENGTH_SHORT).show();
+            boolean isInserted = dataGenerator.insertMovieToDB(movieParcelable);
+            if(isInserted){
+                Snackbar.make(main_container, R.string.marked_as_favourite, Snackbar.LENGTH_SHORT).show();
+                isAlreadyFavourite = true;
+            } else{
+                Snackbar.make(main_container, R.string.some_error_occured, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
