@@ -42,6 +42,7 @@ public class DetailActivityFragment extends Fragment{
     @Bind(R.id.fab_favourite) FloatingActionButton favourite;
     @Bind(R.id.fab_reviews) FloatingActionButton reviews;
     @Bind(R.id.fab_trailers) FloatingActionButton trailers;
+    @Bind(R.id.fab_share) FloatingActionButton share;
 
     MovieParcelable movieParcelable = null;
     ArrayList<String> trailerLinks = null;
@@ -52,6 +53,7 @@ public class DetailActivityFragment extends Fragment{
     DataGenerator dataGenerator;
 
     Resources resources;
+
 
     private static final String TAG = DetailActivityFragment.class.getSimpleName();
     public DetailActivityFragment(){
@@ -112,7 +114,7 @@ public class DetailActivityFragment extends Fragment{
 
         Animation animationShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         Animation animationHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
-        final OvershootInterpolator interpolator = new OvershootInterpolator();
+        OvershootInterpolator interpolator = new OvershootInterpolator();
 
         if(menuShown){
 
@@ -127,6 +129,9 @@ public class DetailActivityFragment extends Fragment{
             trailers.startAnimation(animationHide);
             trailers.setClickable(false);
 
+            share.startAnimation(animationHide);
+            share.setClickable(false);
+
             menuShown = !menuShown;
         } else {
             ViewCompat.animate(fab).rotation(45f).withLayer().setDuration(100).setInterpolator(interpolator).start();
@@ -138,6 +143,10 @@ public class DetailActivityFragment extends Fragment{
 
             trailers.startAnimation(animationShow);
             trailers.setClickable(true);
+
+            share.startAnimation(animationShow);
+            share.setClickable(true);
+
 
             menuShown = !menuShown;
         }
@@ -158,13 +167,21 @@ public class DetailActivityFragment extends Fragment{
 
     @OnClick(R.id.fab_trailers)
     public void showTrailers(){
+        CharSequence[] charSequences = new CharSequence[trailerLinks.size()];
+        for(int i = 0; i < trailerLinks.size(); i++)
+            charSequences[i] = "Trailer " + (i+1);
+
         if(menuShown)
             toggleFloatingSubMenu();
+
+        if(trailerLinks != null && trailerLinks.size() != 0){
+
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Watch Trailers")
                 .setCancelable(true)
-                .setItems(trailerLinks.toArray(new CharSequence[trailerLinks.size()]), new DialogInterface.OnClickListener() {
+                .setItems(charSequences, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         openLinkIntent(trailerLinks.get(which));
@@ -231,6 +248,34 @@ public class DetailActivityFragment extends Fragment{
             } else{
                 Snackbar.make(main_container, R.string.some_error_occured, Snackbar.LENGTH_SHORT).show();
             }
+        }
+    }
+
+
+    @OnClick(R.id.fab_share)
+    public void shareTrailer(){
+
+        if(menuShown)
+            toggleFloatingSubMenu();
+
+        if(trailerLinks != null || trailerLinks.size() != 0){
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Hey!").append("\n")
+                    .append("Check out the trailer for ")
+                    .append(movieParcelable.title)
+                    .append(" at ")
+                    .append(trailerLinks.get(0))
+                    .append("\n")
+                    .append("#PopularMovies");
+
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain")
+                .putExtra(Intent.EXTRA_TEXT, sb.toString());
+            startActivity(Intent.createChooser(intent, "Share using...d"));
+        } else{
+            Snackbar.make(main_container, R.string.no_trailer_available, Snackbar.LENGTH_SHORT).show();
         }
     }
 }

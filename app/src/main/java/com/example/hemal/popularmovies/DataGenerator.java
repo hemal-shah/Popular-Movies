@@ -62,6 +62,7 @@ public class DataGenerator {
     private static final String SITE = "site";
     private static final String KEY = "key";
     private static final String YOUTUBE = "YouTube";
+    private static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
 
     /*Done defining constant strings*/
 
@@ -159,20 +160,14 @@ public class DataGenerator {
     /**
      * Interface created to update the calling class when the data is completely loaded so that they can display it,
      * or if the dataload failed, so that they can display any error messages.
-     * <p/>
-     * <p/>
-     * Exception management not possible currently. TODO : add exception management.
+     * Exception management not possible currently.
      */
     public interface DataUpdate {
         void onDataLoaded();
         void onDataLoadFail();
     }
 
-    public interface SingleMovieDataUpdate {
-        void onTrailersLoaded();
-    }
 
-    private static final String YOUTUBE_BASE_LINK = "https://www.youtube.com/watch?v=";
 
     public ArrayList<String> getTrailerLinks(int id) {
         Uri uri = Uri.parse(MOVIE_BASE_LINK).buildUpon()
@@ -217,8 +212,6 @@ public class DataGenerator {
                         }
                     }
             );
-
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -295,10 +288,9 @@ public class DataGenerator {
         values.put(MovieEntry.COLUMN_RELEASE_DATE, object.release_date);
 
         Uri uri = this.mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, values);
-        if(uri != null){
-            Log.i(TAG, "insertMovieToDB: Movie inserted successfully!");
+        if(uri != null)
             return true;
-        }
+
         return false;
     }
 
@@ -330,20 +322,13 @@ public class DataGenerator {
         }
         c.close();
 
-
         return this.movieParcelables;
     }
 
     /**
-     * Another metod for bulkInsert
-     * sample testing only
-     * Sample check done
-     * Problem: As the insert method, bulkInsert doesn't throw error when the data is tried to be inserted again
-     * into the table, primary key constraint is present.
-     * log entries do show errors
-     * but the app doesn't crash in doing so.
+     * Insesrts the "movies" into the database altogether.
+     * @param movies list of movies to insert into database.
      */
-
     private void bulkInsertMovieData(ArrayList<MovieParcelable> movies){
 
         int i = 0;
@@ -370,9 +355,9 @@ public class DataGenerator {
                 new String[]{String.valueOf(id)},
                 null);
 
-        if(c != null && c.moveToFirst()){
+        if(c != null && c.moveToFirst())
             return true;
-        }
+
         return false;
     }
 
@@ -380,8 +365,6 @@ public class DataGenerator {
         int rowsDeleted = this.mContext.getContentResolver().delete(MovieEntry.CONTENT_URI,
                 MovieEntry.COLUMN_MOVIE_ID + "=?",
                 new String[]{String.valueOf(id)});
-
-        Log.i(TAG, "removeFromFavourites: Number of rows deleted: " + rowsDeleted);
 
         if(rowsDeleted > 0)
             return true;

@@ -24,32 +24,17 @@
 
 
     <string name="something_went_wrong" translatable="true">Something went wrong!</string>
-    <string name="data_fail">Data can\'t be retrieved!\nTry again later.</string>
-    <string name="movie_id">movie_id</string>
-    <string name="movie_name">movie_name</string>
-    <string name="no_data">Please connect to internet to load content!</string>
-    <string name="some_error_occured">Some error occured!</string>
-    <string name="marked_as_favourite">Marked as favourite!</string>
-    <string name="marking_as_favourite">Marking as favourite!</string>
-    <string name="no">No</string>
-    <string name="cant_remove_from_favourites">Can\'t remove from favourites!</string>
-    <string name="removed_from_favourites">Removed from favourites!</string>
-    <string name="removing_from_favourites">Removing from favourites!</string>
-    <string name="favourites">My Favourites</string>
-
-
-    <!-- string resources when user clicks on fab in the detail activity-->
-    <string-array name="dialog_items_0">
-        <item>Mark Favourite</item>
-        <item>Trailers</item>
-        <item>Reviews</item>
-    </string-array>
-
-    <string-array name="dialog_items_1">
-        <item>Remove Favourite</item>
-        <item>Trailers</item>
-        <item>Reviews</item>
-    </string-array>
-
+    <string name="data_fail" translatable="true">Data can\'t be retrieved!\nTry again later.</string>
+    <string name="movie_id" translatable="false">movie_id</string>
+    <string name="movie_name" translatable="false">movie_name</string>
+    <string name="no_data" translatable="true">Please connect to internet to load content!</string>
+    <string name="some_error_occured" translatable="true">Some error occured!</string>
+    <string name="marked_as_favourite" translatable="true">Marked as favourite!</string>
+    <string name="marking_as_favourite" translatable="true">Marking as favourite!</string>
+    <string name="cant_remove_from_favourites" translatable="true">Can\'t remove from favourites!</string>
+    <string name="removed_from_favourites" translatable="true">Removed from favourites!</string>
+    <string name="removing_from_favourites" translatable="true">Removing from favourites!</string>
+    <string name="favourites" translatable="true">My Favourites</string>
+    <string name="no_trailer_available">No trailer available!</string>
 
 </resources>

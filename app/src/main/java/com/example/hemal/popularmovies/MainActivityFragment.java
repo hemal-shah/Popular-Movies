@@ -178,9 +178,8 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
      */
     @Override
     public void onDataLoaded() {
-        if(adapter != null){
+        if(adapter != null)
             adapter.notifyDataSetChanged();
-        }
     }
 
     /**
@@ -189,9 +188,8 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
      */
     @Override
     public void onDataLoadFail() {
-        if(recyclerView != null){
+        if(recyclerView != null)
             Snackbar.make(recyclerView, resources.getString(R.string.data_fail), Snackbar.LENGTH_SHORT).show();
-        }
     }
 
 }

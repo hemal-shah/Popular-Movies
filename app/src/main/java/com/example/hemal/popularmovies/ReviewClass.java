@@ -35,13 +35,10 @@ public class ReviewClass extends AppCompatActivity implements DataGenerator.Data
         setContentView(R.layout.review_page);
 
         ButterKnife.bind(this);
-
-        setUpActivity();
         Intent incomingIntent = getIntent();
         movieID = incomingIntent.getIntExtra(getString(R.string.movie_id), -1);
         movie_name = incomingIntent.getStringExtra(getString(R.string.movie_name));
-
-
+        setUpActivity();
         dataGenerator = new DataGenerator(this, this);
         arrayList = dataGenerator.getReviewParcelables(movieID);
         adapter = new ReviewAdapter(this, arrayList);
@@ -52,9 +49,8 @@ public class ReviewClass extends AppCompatActivity implements DataGenerator.Data
 
     @Override
     public void onDataLoaded() {
-        if(adapter != null){
+        if(adapter != null)
             adapter.notifyDataSetChanged();
-        }
     }
 
     @Override
