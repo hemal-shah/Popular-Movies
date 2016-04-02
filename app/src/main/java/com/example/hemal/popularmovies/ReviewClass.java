@@ -17,12 +17,12 @@ import butterknife.ButterKnife;
 /**
  * Created by hemal on 13/3/16.
  */
-public class ReviewClass extends AppCompatActivity implements DataGenerator.DataUpdate {
+public class ReviewClass extends AppCompatActivity implements DataControl.DataUpdate {
 
 
     @Bind(R.id.rv_review_page) RecyclerView recyclerView;
     ArrayList<ReviewParcelable> arrayList = null;
-    DataGenerator dataGenerator;
+    DataControl dataControl;
     ReviewAdapter adapter;
     String movie_name;
     int movieID;
@@ -39,8 +39,8 @@ public class ReviewClass extends AppCompatActivity implements DataGenerator.Data
         movieID = incomingIntent.getIntExtra(getString(R.string.movie_id), -1);
         movie_name = incomingIntent.getStringExtra(getString(R.string.movie_name));
         setUpActivity();
-        dataGenerator = new DataGenerator(this, this);
-        arrayList = dataGenerator.getReviewParcelables(movieID);
+        dataControl = new DataControl(this, this);
+        arrayList = dataControl.getReviewParcelables(movieID);
         adapter = new ReviewAdapter(this, arrayList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);

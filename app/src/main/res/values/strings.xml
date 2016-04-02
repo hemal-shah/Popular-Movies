@@ -11,7 +11,7 @@
     <string name="single_movie" translatable="false">single_movie_parcelable</string>
     <string name="small_poster" translatable="true">Small Poster</string>
     <string name="description" translatable="true">Description</string>
-    <string name="synopsis" translatable="true">Synopsis</string>
+    <string name="synopsis" translatable="true">Synopsis:</string>
     <string name="random_text" translatable="false">random_text</string>
     <string name="user_rating" translatable="true">User Rating :</string>
     <string name="release_date" translatable="true">Release Date :</string>

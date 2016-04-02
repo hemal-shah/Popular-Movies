@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title_size">30sp</dimen>
+    <dimen name="description_size">18sp</dimen>
+    <dimen name="normal_small_size">20sp</dimen>
+    <dimen name="tv_size">35sp</dimen>
+</resources>

@@ -42,12 +42,6 @@ public class ApplicationClass extends Application {
         request.setTag(TAG);
         getRequestQueue().add(request);
     }
-
-    public void cancelPendingRequests(Object tag){
-        if(mRequestQueue != null){
-            mRequestQueue.cancelAll(tag);
-        }
-    }
 }
 
 

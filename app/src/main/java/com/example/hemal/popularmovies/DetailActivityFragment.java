@@ -20,8 +20,11 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,20 +32,32 @@ import butterknife.OnClick;
 /**
  * Created by hemal on 14/2/16.
  */
-public class DetailActivityFragment extends Fragment{
+public class DetailActivityFragment extends Fragment {
 
-    @Bind(R.id.rl_detail_activity) RelativeLayout main_container;
-    @Bind(R.id.main_poster_detail_activity) ImageView bigPoster;
-    @Bind(R.id.small_poster_detail_activity) ImageView smallPoster;
-    @Bind(R.id.tv_title_detail_page) TextView title;   //, description, release_date, user_rating;
-    @Bind(R.id.description_detail) TextView description;
-    @Bind(R.id.user_rating_description) TextView user_rating;
-    @Bind(R.id.fab_detail_activity) FloatingActionButton fab;
-    @Bind(R.id.release_date_description) TextView release_date;
-    @Bind(R.id.fab_favourite) FloatingActionButton favourite;
-    @Bind(R.id.fab_reviews) FloatingActionButton reviews;
-    @Bind(R.id.fab_trailers) FloatingActionButton trailers;
-    @Bind(R.id.fab_share) FloatingActionButton share;
+    @Bind(R.id.rl_detail_activity)
+    RelativeLayout main_container;
+    @Bind(R.id.main_poster_detail_activity)
+    ImageView bigPoster;
+    @Bind(R.id.small_poster_detail_activity)
+    ImageView smallPoster;
+    @Bind(R.id.tv_title_detail_page)
+    TextView title;   //, description, release_date, user_rating;
+    @Bind(R.id.description_detail)
+    TextView description;
+    @Bind(R.id.user_rating_description)
+    TextView user_rating;
+    @Bind(R.id.fab_detail_activity)
+    FloatingActionButton fab;
+    @Bind(R.id.release_date_description)
+    TextView release_date;
+    @Bind(R.id.fab_favourite)
+    FloatingActionButton favourite;
+    @Bind(R.id.fab_reviews)
+    FloatingActionButton reviews;
+    @Bind(R.id.fab_trailers)
+    FloatingActionButton trailers;
+    @Bind(R.id.fab_share)
+    FloatingActionButton share;
 
     MovieParcelable movieParcelable = null;
     ArrayList<String> trailerLinks = null;
@@ -50,13 +65,14 @@ public class DetailActivityFragment extends Fragment{
     private boolean menuShown = false;
     private boolean isAlreadyFavourite = false; //Indicates whether the movie is already marked favourite.
 
-    DataGenerator dataGenerator;
+    DataControl dataControl;
 
     Resources resources;
 
 
     private static final String TAG = DetailActivityFragment.class.getSimpleName();
-    public DetailActivityFragment(){
+
+    public DetailActivityFragment() {
     }
 
     @Override
@@ -72,8 +88,8 @@ public class DetailActivityFragment extends Fragment{
         View v = inflater.inflate(R.layout.detail_activity, container, false);
 
 
-        dataGenerator = new DataGenerator(getActivity());
-        trailerLinks = dataGenerator.getTrailerLinks(movieParcelable.id);
+        dataControl = new DataControl(getActivity());
+        trailerLinks = dataControl.getTrailerLinks(movieParcelable.id);
         ButterKnife.bind(this, v);
 
 
@@ -92,17 +108,17 @@ public class DetailActivityFragment extends Fragment{
 
     private String formatString(String title) {
         /**
-        * In landscape mode the title of the movie spoils the look.
-        * So here i am formatting the title so that after every two words, there is a newline character.
-        * */
+         * In landscape mode the title of the movie spoils the look.
+         * So here i am formatting the title so that after every two words, there is a newline character.
+         * */
 
         int wordCount = 0;
         StringBuilder sb = new StringBuilder(title);
-        for (int i = 0; i< sb.length(); i++){
-            if(sb.charAt(i) == ' ' ){
+        for (int i = 0; i < sb.length(); i++) {
+            if (sb.charAt(i) == ' ') {
                 wordCount++;
-                if(wordCount % 3 == 0){
-                    sb.replace(i, i+1, "\n");
+                if (wordCount % 3 == 0) {
+                    sb.replace(i, i + 1, "\n");
                 }
             }
         }
@@ -116,7 +132,7 @@ public class DetailActivityFragment extends Fragment{
         Animation animationHide = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
         OvershootInterpolator interpolator = new OvershootInterpolator();
 
-        if(menuShown){
+        if (menuShown) {
 
             ViewCompat.animate(fab).rotation(0f).withLayer().setDuration(100).setInterpolator(interpolator).start();
 
@@ -155,8 +171,8 @@ public class DetailActivityFragment extends Fragment{
 
 
     @OnClick(R.id.fab_reviews)
-    public void showReviews(){
-        if(menuShown)
+    public void showReviews() {
+        if (menuShown)
             toggleFloatingSubMenu();
 
         Intent intent = new Intent(getActivity(), ReviewClass.class);
@@ -166,15 +182,15 @@ public class DetailActivityFragment extends Fragment{
     }
 
     @OnClick(R.id.fab_trailers)
-    public void showTrailers(){
+    public void showTrailers() {
         CharSequence[] charSequences = new CharSequence[trailerLinks.size()];
-        for(int i = 0; i < trailerLinks.size(); i++)
-            charSequences[i] = "Trailer " + (i+1);
+        for (int i = 0; i < trailerLinks.size(); i++)
+            charSequences[i] = "Trailer " + (i + 1);
 
-        if(menuShown)
+        if (menuShown)
             toggleFloatingSubMenu();
 
-        if(trailerLinks != null && trailerLinks.size() != 0){
+        if (trailerLinks != null && trailerLinks.size() != 0) {
 
         }
 
@@ -199,7 +215,7 @@ public class DetailActivityFragment extends Fragment{
 
 
     @OnClick(R.id.fab_favourite)
-    public void toggleFavourite(){
+    public void toggleFavourite() {
 
         /**
          * First check whether the movie is already marked as favourite or not
@@ -208,12 +224,12 @@ public class DetailActivityFragment extends Fragment{
          */
 
 
-        isAlreadyFavourite = dataGenerator.queryForExistingMovie(movieParcelable.id);
+        isAlreadyFavourite = dataControl.queryForExistingMovie(movieParcelable.id);
 
-        if(menuShown)
+        if (menuShown)
             toggleFloatingSubMenu();
 
-        if(isAlreadyFavourite){
+        if (isAlreadyFavourite) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(movieParcelable.title)
                     .setMessage("This movie is already marked as favourite. Do you want to remove it from favourites?")
@@ -222,11 +238,11 @@ public class DetailActivityFragment extends Fragment{
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Snackbar.make(main_container, R.string.removing_from_favourites, Snackbar.LENGTH_SHORT).show();
-                            boolean isDeleted = dataGenerator.removeFromFavourites(movieParcelable.id);
-                            if(isDeleted){
+                            boolean isDeleted = dataControl.removeFromFavourites(movieParcelable.id);
+                            if (isDeleted) {
                                 Snackbar.make(main_container, R.string.removed_from_favourites, Snackbar.LENGTH_SHORT).show();
                                 isAlreadyFavourite = false;
-                            } else{
+                            } else {
                                 Snackbar.make(main_container, R.string.cant_remove_from_favourites, Snackbar.LENGTH_SHORT).show();
                             }
                         }
@@ -239,13 +255,13 @@ public class DetailActivityFragment extends Fragment{
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else{
+        } else {
             Snackbar.make(getView(), R.string.marking_as_favourite, Snackbar.LENGTH_SHORT).show();
-            boolean isInserted = dataGenerator.insertMovieToDB(movieParcelable);
-            if(isInserted){
+            boolean isInserted = dataControl.insertMovieToDB(movieParcelable);
+            if (isInserted) {
                 Snackbar.make(main_container, R.string.marked_as_favourite, Snackbar.LENGTH_SHORT).show();
                 isAlreadyFavourite = true;
-            } else{
+            } else {
                 Snackbar.make(main_container, R.string.some_error_occured, Snackbar.LENGTH_SHORT).show();
             }
         }
@@ -253,12 +269,12 @@ public class DetailActivityFragment extends Fragment{
 
 
     @OnClick(R.id.fab_share)
-    public void shareTrailer(){
+    public void shareTrailer() {
 
-        if(menuShown)
+        if (menuShown)
             toggleFloatingSubMenu();
 
-        if(trailerLinks != null || trailerLinks.size() != 0){
+        if (trailerLinks != null || trailerLinks.size() != 0) {
 
             StringBuilder sb = new StringBuilder();
             sb.append("Hey!").append("\n")
@@ -272,9 +288,9 @@ public class DetailActivityFragment extends Fragment{
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, sb.toString());
-            startActivity(Intent.createChooser(intent, "Share using...d"));
-        } else{
+                    .putExtra(Intent.EXTRA_TEXT, sb.toString());
+            startActivity(Intent.createChooser(intent, "Share using..."));
+        } else {
             Snackbar.make(main_container, R.string.no_trailer_available, Snackbar.LENGTH_SHORT).show();
         }
     }

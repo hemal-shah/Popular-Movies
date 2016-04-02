@@ -8,7 +8,7 @@
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:cardBackgroundColor="#33333355"
+        app:cardBackgroundColor="#99a1a1a1"
         android:background="@android:color/darker_gray"
         android:layout_height="wrap_content">
 
@@ -68,7 +68,6 @@
             <TextView
                 android:id="@+id/description_detail"
                 android:padding="@dimen/padding_text_normal"
-                android:text="@string/random_text"
                 android:textSize="@dimen/normal_small_size"
                 android:layout_width="wrap_content"
                 android:textColor="@android:color/white"

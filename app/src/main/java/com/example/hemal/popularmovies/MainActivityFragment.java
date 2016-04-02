@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
  */
 
 
-public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, DataGenerator.DataUpdate{
+public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, DataControl.DataUpdate{
 
 
     @Bind(R.id.rv_content_main) RecyclerView recyclerView;
@@ -34,7 +34,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
     private static final String INSTANCE_KEY = "movie_data";
     ArrayList<MovieParcelable> movieParcelables;
-    DataGenerator dataGenerator;
+    DataControl dataControl;
 
     private static final String TAG = MainActivityFragment.class.getSimpleName();
 
@@ -48,7 +48,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         super.onCreate(savedInstanceState);
 
         resources = getActivity().getResources();
-        dataGenerator = new DataGenerator(getActivity(), this);
+        dataControl = new DataControl(getActivity(), this);
 
         /*
          * Retrieve data if the user has already downloaded the content..from saveInstanceState
@@ -56,7 +56,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
 
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(INSTANCE_KEY)) {
-            movieParcelables = dataGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
+            movieParcelables = dataControl.preferenceMode(resources.getString(R.string.popularity_sort));
         } else {
             movieParcelables = savedInstanceState.getParcelableArrayList(INSTANCE_KEY);
             if(adapter != null){
@@ -113,7 +113,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_highest_rating:
-                movieParcelables  = dataGenerator.preferenceMode(resources.getString(R.string.rating_sort));
+                movieParcelables  = dataControl.preferenceMode(resources.getString(R.string.rating_sort));
                 adapter.notifyDataSetChanged();
                 if (item.isChecked())
                     item.setChecked(false);
@@ -121,7 +121,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
                     item.setChecked(true);
                 return true;
             case R.id.menu_popularity:
-                movieParcelables = dataGenerator.preferenceMode(resources.getString(R.string.popularity_sort));
+                movieParcelables = dataControl.preferenceMode(resources.getString(R.string.popularity_sort));
                 adapter.notifyDataSetChanged();
                 if (item.isChecked())
                     item.setChecked(false);
@@ -129,8 +129,9 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
                     item.setChecked(true);
                 return true;
             case R.id.favourites_movie:
-                movieParcelables = dataGenerator.retrieveDataFromDB();
+                movieParcelables = dataControl.retrieveDataFromDB();
                 adapter.notifyDataSetChanged();
+                ((Callback)getActivity()).showFirstItem(movieParcelables.get(0));
                 if(item.isChecked())
                     item.setChecked(false);
                 else
@@ -152,10 +153,12 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         * This is called whenever the user clicks on one of the images..
         * We need to pass that parcelable to the detail activity so that it can be used to retrieve data.
         * */
-
+/*
         Intent newActivity = new Intent(getActivity(), DetailActivity.class);
         newActivity.putExtra(getActivity().getResources().getString(R.string.parcel), movieParcelable);
-        startActivity(newActivity);
+        startActivity(newActivity);*/
+
+        ((MainActivityFragment.Callback)getActivity()).showDetails(movieParcelable);
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -172,7 +175,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
     }
 
     /**
-     * When the url is passed to the DataGenerator class, it returns before the data is retrieved.
+     * When the url is passed to the DataControl class, it returns before the data is retrieved.
      * So, when the data is completely retrieved, this method is called, so that the adapter can be notified
      * and the contents can be shown in the UI.
      */
@@ -180,6 +183,9 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
     public void onDataLoaded() {
         if(adapter != null)
             adapter.notifyDataSetChanged();
+
+        ((Callback)getActivity()).showFirstItem(movieParcelables.get(0));
+
     }
 
     /**
@@ -190,6 +196,11 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
     public void onDataLoadFail() {
         if(recyclerView != null)
             Snackbar.make(recyclerView, resources.getString(R.string.data_fail), Snackbar.LENGTH_SHORT).show();
+    }
+
+    public interface Callback{
+        void showDetails(MovieParcelable movieParcelable);
+        void showFirstItem(MovieParcelable movieParcelable);
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -13,10 +13,10 @@
         android:background="@color/colorPrimary"
         android:layout_height="?attr/actionBarSize"/>
 
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/frame_layout_activity_main"
+    <fragment
+        android:id="@+id/fragment_activity_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:name="com.example.hemal.popularmovies.MainActivityFragment"
+        tools:layout="@layout/content_main" />
 </LinearLayout>
