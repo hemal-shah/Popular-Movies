@@ -28,6 +28,8 @@ import butterknife.ButterKnife;
 public class MainActivityFragment extends Fragment implements HomePageAdapter.Callback, DataControl.DataUpdate{
 
 
+    boolean fromDb = false;
+
     @Bind(R.id.rv_content_main) RecyclerView recyclerView;
     Resources resources ;
     HomePageAdapter adapter;
@@ -115,6 +117,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
             case R.id.menu_highest_rating:
                 movieParcelables  = dataControl.preferenceMode(resources.getString(R.string.rating_sort));
                 adapter.notifyDataSetChanged();
+                fromDb = false;
                 if (item.isChecked())
                     item.setChecked(false);
                 else
@@ -123,6 +126,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
             case R.id.menu_popularity:
                 movieParcelables = dataControl.preferenceMode(resources.getString(R.string.popularity_sort));
                 adapter.notifyDataSetChanged();
+                fromDb = false;
                 if (item.isChecked())
                     item.setChecked(false);
                 else
@@ -131,6 +135,7 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
             case R.id.favourites_movie:
                 movieParcelables = dataControl.retrieveDataFromDB();
                 adapter.notifyDataSetChanged();
+                fromDb = true;
                 ((Callback)getActivity()).showFirstItem(movieParcelables.get(0));
                 if(item.isChecked())
                     item.setChecked(false);
@@ -153,10 +158,6 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         * This is called whenever the user clicks on one of the images..
         * We need to pass that parcelable to the detail activity so that it can be used to retrieve data.
         * */
-/*
-        Intent newActivity = new Intent(getActivity(), DetailActivity.class);
-        newActivity.putExtra(getActivity().getResources().getString(R.string.parcel), movieParcelable);
-        startActivity(newActivity);*/
 
         ((MainActivityFragment.Callback)getActivity()).showDetails(movieParcelable);
     }
@@ -203,4 +204,15 @@ public class MainActivityFragment extends Fragment implements HomePageAdapter.Ca
         void showFirstItem(MovieParcelable movieParcelable);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(fromDb){
+            movieParcelables = dataControl.retrieveDataFromDB();
+            adapter.notifyDataSetChanged();
+            ((Callback)getActivity()).showFirstItem(movieParcelables.get(0));
+        }
+    }
 }
